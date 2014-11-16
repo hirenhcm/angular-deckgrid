@@ -55,12 +55,15 @@ angular.module('akoenig.deckgrid').factory('DeckgridDescriptor', [
         function Descriptor () {
             this.restrict = 'AE';
 
-            this.template = '<div data-ng-repeat="column in columns" class="{{layout.classList}}">' +
-                                '<div data-ng-repeat="card in column" data-ng-include="cardTemplate"></div>' +
+            this.template = '<div data-ng-repeat="column in columns" class="{{layout.classList}}" ng-switch on="$index">' +
+            					'<div ng-switch-when="3"><div data-ng-repeat="card in column" data-ng-include="cardAds"></div></div>' +
+                                '<div ng-switch-default><div data-ng-repeat="card in column" data-ng-include="cardTemplate"></div></div>' +
                             '</div>';
 
             this.scope = {
-                'model': '=source'
+                'model': '=source',
+                'adsCard' : '=cardAds',
+                'adsCardLoc' : '=adsCardLoc'
             };
 
             //
@@ -132,7 +135,9 @@ angular.module('akoenig.deckgrid').factory('DeckgridDescriptor', [
                 // use the provided template file
                 scope.cardTemplate = attrs.cardtemplate;
             }
-
+            
+            scope.cardAds = elem.attr('cardAds');
+            
             scope.mother = scope.$parent;
 
             this.$$deckgrid = Deckgrid.create(scope, elem[0]);
